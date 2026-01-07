@@ -1,0 +1,56 @@
+variables:
+  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  MAVEN_CLI_OPTS: "--batch-mode"
+  POSTGRES_IMAGE: "postgres:14.5-alpine"
+  MIRROR: "mirror.gcr.io/library"
+cache:
+  paths:
+    - .m2/repository
+
+stages:
+  - build
+  - deploy
+
+build-server:
+  stage: build
+  image: $MIRROR/maven:3.9.9-eclipse-temurin-21-alpine
+  services:
+    - name: $MIRROR/$POSTGRES_IMAGE
+      alias: postgres
+  variables:
+    POSTGRES_HOST: 'postgres'
+    POSTGRES_DB: 'orng'
+    POSTGRES_USER: 'orng'
+    POSTGRES_PASSWORD: 'orng'
+    DB_URL: "jdbc:postgresql://postgres:5432/orng"
+  script:
+    - mvn -f ./pom.xml $MAVEN_CLI_OPTS deploy -s ci_settings.xml
+    - mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec > target/version
+  artifacts:
+    paths:
+      - orng*/target/*.jar
+      - target/version
+    expire_in: 30 min
+
+
+build-and-deploy-docker:
+  stage: deploy
+  only:
+    - develop
+    - /^release\/[0-9.]*$/
+  image: $MIRROR/docker:stable
+  services:
+    - name: $MIRROR/docker:dind
+      alias: theDockerHost
+      command: [ "--tls=false" ]
+  variables:
+    DOCKER_HOST: tcp://theDockerHost:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE:latest -t $CI_REGISTRY_IMAGE:$(cat target/version) .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:$(cat target/version)
