@@ -3,12 +3,10 @@ package plugin.orng.auth.service;
 import java.time.*;
 import java.util.*;
 
-import jakarta.servlet.http.*;
 import lombok.*;
 import org.springframework.http.*;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.userdetails.*;
-import org.springframework.security.crypto.password.*;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
@@ -86,8 +84,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public ResponseEntity<AuthenticationResponseDto> refreshToken(String authHeader) {
 
+        // Извлечёт токен из заголовка
         String token = JwtTokenExtractor.extractToken(authHeader);
 
+        // Проверит валидность токена и вернёт Claim из токена, токен нормальный
         Long userId = jwtParser.extractUserId(token);
 
         UserEntity user = usersRepository.findById(userId)

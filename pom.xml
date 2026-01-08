@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
     <artifactId>orng-auth</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <name>OrngJWTAuthentication</name>
-	<description>Orng JWTAuthentication service</description>
+    <description>Orng JWTAuthentication service</description>
 
     <packaging>pom</packaging>
 
@@ -106,50 +106,6 @@
                     <configLocation>checkstyle.xml</configLocation>
                 </configuration>
             </plugin>
-
-<!--            <plugin>-->
-<!--                <groupId>com.diffplug.spotless</groupId>-->
-<!--                <artifactId>spotless-maven-plugin</artifactId>-->
-<!--                <version>3.1.0</version>-->
-<!--                <configuration>-->
-<!--                    <java>-->
-<!--                        <googleJavaFormat>-->
-<!--                            <version>1.30.0</version>-->
-<!--                            <style>AOSP</style>-->
-<!--                        </googleJavaFormat>-->
-<!--                        <removeUnusedImports/>-->
-<!--                        <trimTrailingWhitespace/>-->
-<!--                        <endWithNewline/>-->
-<!--                    </java>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>spotless-check</id>-->
-<!--                        <phase>verify</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>check</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.openrewrite.maven</groupId>-->
-<!--                <artifactId>rewrite-maven-plugin</artifactId>-->
-<!--                <version>6.25.0</version>-->
-<!--                <configuration>-->
-<!--                    <activeRecipes>-->
-<!--                        <recipe>org.openrewrite.staticanalysis.CodeCleanup</recipe>-->
-<!--                    </activeRecipes>-->
-<!--                    <checkstyleConfigFile>checkstyle.xml</checkstyleConfigFile>-->
-<!--                </configuration>-->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.openrewrite.recipe</groupId>-->
-<!--                        <artifactId>rewrite-static-analysis</artifactId>-->
-<!--                        <version>2.23.0</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 
