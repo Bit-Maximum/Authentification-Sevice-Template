@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.extern.slf4j.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.security.servlet.*;
 import org.springframework.boot.autoconfigure.web.servlet.*;
 import org.springframework.boot.context.properties.*;
 import org.springframework.context.annotation.*;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.method.configuration.*;
 import org.springframework.security.config.annotation.web.builders.*;
 import org.springframework.security.config.annotation.web.configurers.*;
 import org.springframework.security.config.http.*;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.security.web.*;
 import org.springframework.security.web.access.*;
 import org.springframework.security.web.authentication.*;
@@ -60,9 +62,9 @@ public class OrngAuthAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public JwtAccessTokenValidator jwtAccessTokenValidator(
-            JwtVerificationProperties properties,
-            JwtParser jwtParser,
-            JwtValidator jwtValidator
+        JwtVerificationProperties properties,
+        JwtParser jwtParser,
+        JwtValidator jwtValidator
     ) {
         return new JwtAccessTokenValidator(properties, jwtParser, jwtValidator);
     }
@@ -79,19 +81,28 @@ public class OrngAuthAutoConfiguration {
         return new OrngAccessDeniedHandler();
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+    //    @Bean
+    //    @ConditionalOnMissingBean
+    //    CorsConfigurationSource corsConfigurationSource() {
+    //        CorsConfiguration configuration = new CorsConfiguration();
+    //        configuration.setAllowedOrigins(List.of("*"));
+    //        configuration.setAllowedMethods(List.of("*"));
+    //        configuration.setAllowedHeaders(List.of("*"));
+    //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //        source.registerCorsConfiguration("/**", configuration);
+    //        return source;
+    //    }
+
+    //    @Bean
+    //    @ConditionalOnMissingBean
+    //    UserDetailsService userDetailsService() {
+    //        return username -> {
+    //            throw new UsernameNotFoundException("JWT-only authentication");
+    //        };
+    //    }
 
     @Bean
+    @Order(1)
     public SecurityFilterChain securityFilterChain(
         HttpSecurity http,
         JwtFilter jwtFilter,
@@ -100,8 +111,8 @@ public class OrngAuthAutoConfiguration {
 
         log.error("SETTING STARTER FILTER CHAIN");
 
-        http.cors(cors ->
-            cors.configurationSource(corsConfigurationSource()));
+        //        http.cors(cors ->
+        //            cors.configurationSource(corsConfigurationSource()));
 
         http.csrf(AbstractHttpConfigurer::disable);
 

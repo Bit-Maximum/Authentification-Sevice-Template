@@ -51,6 +51,7 @@ public class SecurityConfig {
      * @return созданная цепочка фильтров безопасности
      */
     @Bean
+    @Order(2)
     public SecurityFilterChain filterChain(
         HttpSecurity http,
         UserService userService
@@ -62,7 +63,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers(allowedUrls).permitAll();
-            auth.anyRequest().permitAll();
+            auth.anyRequest().authenticated();
         });
 
         http.userDetailsService(userService);

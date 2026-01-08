@@ -9,7 +9,6 @@ import org.springframework.stereotype.*;
 
 import plugin.orng.auth.config.*;
 import plugin.orng.auth.dto.request.*;
-import plugin.orng.auth.dto.response.*;
 import plugin.orng.auth.entity.*;
 import plugin.orng.auth.repository.*;
 import plugin.orng.auth.service.base.*;
